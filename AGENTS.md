@@ -59,8 +59,10 @@ gh release create v0.1.0 CarDeck-0.1.0.apk --title "..." --notes-file notes.md -
 **CI（`.github/workflows/android-ci.yml`，2026-10-22 起）**：每次 push 自动出**正式签名**包，
 版本号自动累计——传 `-Pcardeck.buildNumber=<github.run_number>`，得到
 `versionName=<appVersionName>.<N>`、`versionCode=base*10000+N`（能覆盖安装上一版；
-base 升 patch 时自动反超）。产物名 `CarDeck-<版本>-release.apk`，**只在 Actions Artifacts，
-不发 GitHub Release**（`permissions: contents: read`）。签名来自仓库 Secrets
+base 升 patch 时自动反超）。产物名 `CarDeck-<版本>-release.apk`，默认只进 Actions Artifacts；
+**提交标题带 `[release]`（或 `[publish]`）时，构建并跑完单测后自动发布 GitHub Release**
+（tag `v<版本>`、`--target` 指向本次提交），也可在 Actions 页 Run workflow 勾选 publish
+补发历史构建（`permissions: contents: write`）。签名来自仓库 Secrets
 `KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD`（可选
 `EXPECTED_CERT_SHA256` 做指纹比对）；**没配 KEYSTORE_BASE64 流水线直接失败**，
 且 Gradle 侧 `check` 会拦「带构建号却没有 keystore.properties」，不允许 debug 签名的

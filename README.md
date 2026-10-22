@@ -223,7 +223,9 @@ reference/                          # 参考仓库（gitignore，不入库不分
 正式 keystore 构建 `assembleRelease`，并自动累计构建号——传
 `-Pcardeck.buildNumber=<run_number>`，得到 `0.1.13.<N>` / `versionCode=base*10000+N`
 （每次推送 +1，可直接覆盖安装上一版；升 patch 时自动反超）。产物
-`CarDeck-<版本>-release.apk` 只在 Actions 的 Artifacts 里，**不发布 GitHub Release**。
+`CarDeck-<版本>-release.apk` 默认只进 Actions 的 Artifacts；**提交标题带 `[release]` 时**
+会在单测通过后自动发布 GitHub Release（tag `v<版本>`，附件即 APK，备注含 SHA-256 与证书指纹），
+也可以在 Actions 页手动 Run workflow 并勾选 `publish` 补发。
 没配 `KEYSTORE_BASE64`（以及 `KEYSTORE_PASSWORD` / `KEY_ALIAS` / `KEY_PASSWORD`）时
 流水线直接失败，不会用 debug 签名凑一个「正式版」。
 
