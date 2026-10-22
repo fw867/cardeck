@@ -66,9 +66,10 @@ jobs:
           if [ "$EVENT" = "workflow_dispatch" ]; then
             [ "${INPUT_PUBLISH:-false}" = "true" ] && publish=true
           else
-            # 只看提交标题行：`feat: xxx [release]`（github_sync 的 markers 约定）
+            # 只看提交标题行，且标记必须在**末尾**（`feat: xxx [release]`）。
+            # 不能在任何位置匹配：标题里顺带提到这个词的普通提交会被误发 Release。
             subject=$(printf '%s\n' "${HEAD_MESSAGE:-}" | head -n1)
-            if printf '%s' "$subject" | grep -Eiq '\[(release|publish)\]'; then
+            if printf '%s' "$subject" | grep -Eiq '\[(release|publish)\][[:space:]]*$'; then
               publish=true
             fi
             echo "头提交：$subject"
